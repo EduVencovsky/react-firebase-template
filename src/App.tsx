@@ -7,18 +7,18 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core';
 
 const theme = createMuiTheme({})
 
-// Uncomment AuthProvider only after you create a firebase config
+// Don't forget to add the firebase config in index.tsx
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <LanguageProvider>
         <UserProvider>
-          {/* <AuthProvider> */}
+          <AuthProvider>
             <div>
               hey
             </div>
-          {/* </AuthProvider> */}
+          </AuthProvider>
         </UserProvider>
       </LanguageProvider>
     </ThemeProvider>
