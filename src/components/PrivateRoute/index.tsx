@@ -1,15 +1,15 @@
 import React, { useContext, ReactNode } from 'react'
-import { Route, Redirect } from "react-router-dom"
+import { Route, Redirect, RouteProps } from "react-router-dom"
 
 import { AuthContext } from '../../context/AuthContext'
 import LoadingView from '../../components/Loading'
 
-interface PrivateRouteProps {
-  children: ReactNode
+interface PrivateRouteProps extends RouteProps {
+  children: ReactNode,
+  redirectUrl?: string,
 }
 
-export default function PrivateRoute({ children, ...otherProps }: PrivateRouteProps) {
-
+const PrivateRoute : React.FC<PrivateRouteProps> = ({ children, redirectUrl = '/login', ...otherProps }) => {
   const { isAuthenticated, isLoading } = useContext(AuthContext)
 
   return (
@@ -24,7 +24,7 @@ export default function PrivateRoute({ children, ...otherProps }: PrivateRoutePr
           ) : (
               <Redirect
                 to={{
-                  pathname: "/login",
+                  pathname: redirectUrl,
                   state: { from: location }
                 }}
               />
@@ -33,3 +33,5 @@ export default function PrivateRoute({ children, ...otherProps }: PrivateRoutePr
     />
   );
 }
+
+export default PrivateRoute

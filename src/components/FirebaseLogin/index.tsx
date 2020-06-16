@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import firebase from 'firebase'
-import StyledFirebaseAuth from 'react-firebaseui/FirebaseAuth'
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 
 const firebaseProviders: {[index: string]: string} = {
   google: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -9,7 +9,7 @@ const firebaseProviders: {[index: string]: string} = {
   github: firebase.auth.GithubAuthProvider.PROVIDER_ID,
 }
 
-const getUiConfig = ({ redirectUrl, loginProviders }: { redirectUrl: string, loginProviders: string[] }) => ({
+const getUiConfig = ({ redirectUrl = '/', loginProviders }: { redirectUrl: string, loginProviders: string[] }) => ({
   // Popup signin flow rather than redirect flow.
   signInFlow: 'popup',
   // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
@@ -22,17 +22,17 @@ const getUiConfig = ({ redirectUrl, loginProviders }: { redirectUrl: string, log
 })
 
 interface FirebaseLoginProps {
-  google: boolean, 
-  facebook: boolean, 
-  github: boolean, 
-  twitter: boolean, 
-  redirectUrl: string | '/signedIn'
+  google?: boolean, 
+  facebook?: boolean, 
+  github?: boolean, 
+  twitter?: boolean, 
+  redirectUrl?: string
 }
 
-export default function FirebaseLogin({ google, facebook, github, twitter, redirectUrl }: FirebaseLoginProps) {
+const FirebaseLogin: React.FC<FirebaseLoginProps> = ({ google, facebook, github, twitter, redirectUrl = '/' }) => {
   const uiConfig = useMemo(() => {
-    const providers = Object.values({ google, facebook, github, twitter }).filter(x => x)
-    const signInOptions = Object.keys(providers).map(x => firebaseProviders[x])
+    const providers = Object.entries({ google, facebook, github, twitter }).filter(([key, val]) => val)
+    const signInOptions = providers.map(x => firebaseProviders[x[0]])
     return getUiConfig({ redirectUrl, loginProviders: signInOptions })
   }, [google, facebook, github, twitter, redirectUrl])
 
@@ -40,3 +40,5 @@ export default function FirebaseLogin({ google, facebook, github, twitter, redir
     <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
   )
 }
+
+export default FirebaseLogin 
